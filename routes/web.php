@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +18,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/subscribe', function () {
-    return view('subscribe', [
-           ]);
+Route::middleware(['auth:sanctum', 'verified'])->get('/user/subscribe', function (Request $request) {
+     //dd($request->user());
+
+    $payLink = $request->user()->newSubscription('default', $free = 21917)
+        ->returnTo(route('dashboard'))
+        ->create();
+
+
+    return view('subscribe', ['payLink' => $payLink]);
+
 })->name('subscribe');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/members', function () {
@@ -39,3 +49,5 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/invoices', function () {
        // 'invoices' => auth()->user()->invoices(),
     ]);
 })->name('invoices');
+
+
