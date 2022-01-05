@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +20,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+Route::middleware(['auth:sanctum', 'verified'])->get('/store', function (Request $request) {
+    $user= Auth::User();
+    return view('store', [
+        'payLink' => $request->user()->chargeProduct($productId = 21988)
+    ]);
+});
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
@@ -27,7 +34,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/user/subscribe', function (Request $request) {
      //dd($request->user());
 
-    $payLink = $request->user()->newSubscription('default', $free = 21917)
+    $payLink = $request->user()->newSubscription('default', $free = 749990)
         ->returnTo(route('dashboard'))
         ->create();
 
@@ -35,6 +42,9 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/user/subscribe', function
     return view('subscribe', ['payLink' => $payLink]);
 
 })->name('subscribe');
+
+
+Route::middleware(['auth:sanctum'],'verified')->get('/buy',[PaymentController::class,'pay']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/members', function () {
     return view('members');
