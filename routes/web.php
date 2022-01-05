@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/user/subscribe', function (Request $request) {
      //dd($request->user());
 
-    $payLink = $request->user()->newSubscription('default', $free = 749990)
+    $payLink = $request->user()->newSubscription('default', $free = 21917)
         ->returnTo(route('dashboard'))
         ->create();
 
